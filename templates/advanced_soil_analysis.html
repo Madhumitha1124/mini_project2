@@ -1,0 +1,540 @@
+﻿<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Advanced Soil Analysis</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+      rel="stylesheet"
+    />
+    <style>
+      body {
+        min-height: 100vh;
+        background:
+          linear-gradient(rgba(24, 80, 35, 0.62), rgba(24, 80, 35, 0.62)),
+          url("https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=1920&q=80")
+            center/cover no-repeat fixed;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        color: #fff;
+      }
+
+      .page-wrap {
+        width: min(860px, calc(100% - 32px));
+        margin: 28px auto 40px;
+      }
+
+      .page-title {
+        font-size: clamp(1.7rem, 2.4vw, 2.2rem);
+        font-weight: 700;
+        margin: 0;
+      }
+
+      .page-subtitle {
+        margin-top: 6px;
+        color: rgba(255, 255, 255, 0.9);
+        font-size: 0.96rem;
+      }
+
+      .analysis-card {
+        margin-top: 24px;
+        background: rgba(245, 246, 251, 0.95);
+        color: #2f3342;
+        border-radius: 14px;
+        padding: 26px;
+        box-shadow: 0 22px 55px rgba(34, 32, 88, 0.28);
+      }
+
+      .how-box {
+        background: #e6f4e8;
+        border-left: 3px solid #3f9f5a;
+        border-radius: 8px;
+        padding: 12px 14px;
+        margin-bottom: 16px;
+      }
+
+      .how-title {
+        color: #318f4b;
+        font-weight: 700;
+        margin-bottom: 6px;
+        font-size: 0.92rem;
+      }
+
+      .how-text {
+        color: #57607a;
+        margin: 0;
+        font-size: 0.88rem;
+      }
+
+      .mode-tabs {
+        display: flex;
+        gap: 28px;
+        border-bottom: 1px solid #cfe4d2;
+        margin-bottom: 20px;
+        overflow-x: auto;
+      }
+
+      .mode-tab {
+        background: transparent;
+        border: none;
+        color: #8c8f99;
+        font-weight: 600;
+        padding: 10px 2px;
+        border-bottom: 2px solid transparent;
+        white-space: nowrap;
+        cursor: pointer;
+      }
+
+      .mode-tab.active {
+        color: #318f4b;
+        border-bottom-color: #318f4b;
+      }
+
+      .field-label {
+        font-size: 0.86rem;
+        color: #2f3342;
+        font-weight: 600;
+        margin-bottom: 6px;
+      }
+
+      .form-control {
+        border: 1px solid #c6ddca;
+        border-radius: 9px;
+        padding: 10px 12px;
+        font-size: 0.92rem;
+      }
+
+      .helper {
+        color: #757e96;
+        font-size: 0.79rem;
+        margin-top: 6px;
+      }
+
+      .fields-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 14px;
+      }
+
+      .btn-fetch {
+        margin-top: 14px;
+        width: 100%;
+        border: none;
+        border-radius: 10px;
+        padding: 11px 16px;
+        font-weight: 600;
+        color: #fff;
+        background: linear-gradient(135deg, #2f8f46 0%, #24683a 100%);
+      }
+
+      .btn-back {
+        margin: 26px auto 0;
+        display: block;
+        width: fit-content;
+        padding: 10px 18px;
+        border-radius: 8px;
+        border: none;
+        background: rgba(247, 248, 255, 0.95);
+        color: #2f8f46;
+        text-decoration: none;
+        font-size: 0.9rem;
+        font-weight: 600;
+      }
+
+      .result-card {
+        display: none;
+        margin-top: 16px;
+        background: #f8f9ff;
+        border: 1px solid #d0e3d3;
+        border-radius: 10px;
+        padding: 14px;
+      }
+
+      .result-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px;
+      }
+
+      .result-item {
+        background: #edf8ef;
+        border: 1px solid #d2e7d5;
+        border-radius: 8px;
+        padding: 10px;
+      }
+
+      .result-item strong {
+        display: block;
+        font-size: 0.78rem;
+        color: #667;
+      }
+
+      .result-item span {
+        font-size: 1rem;
+        color: #26345f;
+        font-weight: 700;
+      }
+
+      .result-block {
+        margin-top: 12px;
+        background: #edf8ef;
+        border: 1px solid #d2e7d5;
+        border-radius: 8px;
+        padding: 10px;
+        color: #334;
+        font-size: 0.9rem;
+      }
+
+      .result-title {
+        font-size: 1rem;
+        font-weight: 700;
+        color: #394164;
+      }
+
+      .result-pre {
+        margin: 8px 0 0;
+        background: #edf8ef;
+        border: 1px solid #d2e7d5;
+        border-radius: 8px;
+        padding: 10px;
+        color: #334;
+        white-space: pre-wrap;
+        word-break: break-word;
+        font-size: 0.85rem;
+      }
+
+      .hidden {
+        display: none !important;
+      }
+
+      @media (max-width: 700px) {
+        .analysis-card {
+          padding: 18px;
+        }
+
+        .fields-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .result-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="page-wrap">
+      <h1 class="page-title">
+        <i class="fas fa-map-marked-alt"></i> Advanced Soil Analysis
+      </h1>
+      <p class="page-subtitle">
+        Fetch soil data using SoilGrids API - powered by satellite technology
+      </p>
+
+      <div class="analysis-card">
+        <div class="how-box">
+          <div class="how-title">
+            <i class="fas fa-lightbulb"></i> How it works
+          </div>
+          <p class="how-text">
+            Enter your location (district/block name or exact coordinates) to
+            fetch real soil data from SoilGrids API. This uses satellite-based
+            soil mapping. Our AI then recommends the best crops for your soil
+            conditions.
+          </p>
+        </div>
+
+        <form id="advForm" method="post">
+          {% csrf_token %}
+          <input
+            type="hidden"
+            id="manual_input"
+            name="manual_input"
+            value="false"
+          />
+
+          <div class="mode-tabs">
+            <button class="mode-tab active" type="button" data-mode="location">
+              <i class="fas fa-map-marker-alt"></i> By Location Name
+            </button>
+            <button class="mode-tab" type="button" data-mode="coords">
+              <i class="fas fa-crosshairs"></i> By Coordinates
+            </button>
+            <button class="mode-tab" type="button" data-mode="manual">
+              <i class="fas fa-flask"></i> Manual Parameters
+            </button>
+          </div>
+
+          <div id="locationFields">
+            <div class="mb-3">
+              <label class="field-label" for="location_name">
+                <i class="fas fa-map-pin"></i> Enter District or Block Name
+              </label>
+              <input
+                class="form-control"
+                id="location_name"
+                name="location_name"
+                type="text"
+                placeholder="e.g., Salem"
+              />
+              <div class="helper">
+                Enter your district, block, or village name in Tamil Nadu
+              </div>
+            </div>
+          </div>
+
+          <div id="coordFields" class="hidden">
+            <div class="fields-grid">
+              <div>
+                <label class="field-label" for="latitude">
+                  <i class="fas fa-location-dot"></i> Latitude
+                </label>
+                <input
+                  class="form-control"
+                  id="latitude"
+                  name="latitude"
+                  type="number"
+                  step="0.000001"
+                  placeholder="e.g., 11.6643"
+                />
+              </div>
+              <div>
+                <label class="field-label" for="longitude">
+                  <i class="fas fa-location-dot"></i> Longitude
+                </label>
+                <input
+                  class="form-control"
+                  id="longitude"
+                  name="longitude"
+                  type="number"
+                  step="0.000001"
+                  placeholder="e.g., 78.1460"
+                />
+              </div>
+            </div>
+          </div>
+
+          <div id="manualFields" class="hidden">
+            <div class="fields-grid">
+              <div>
+                <label class="field-label" for="nitrogen">Nitrogen</label>
+                <input
+                  class="form-control"
+                  id="nitrogen"
+                  name="nitrogen"
+                  type="number"
+                  step="0.01"
+                  placeholder="N value"
+                />
+              </div>
+              <div>
+                <label class="field-label" for="phosphorus">Phosphorus</label>
+                <input
+                  class="form-control"
+                  id="phosphorus"
+                  name="phosphorus"
+                  type="number"
+                  step="0.01"
+                  placeholder="P value"
+                />
+              </div>
+              <div>
+                <label class="field-label" for="potassium">Potassium</label>
+                <input
+                  class="form-control"
+                  id="potassium"
+                  name="potassium"
+                  type="number"
+                  step="0.01"
+                  placeholder="K value"
+                />
+              </div>
+              <div>
+                <label class="field-label" for="ph">pH</label>
+                <input
+                  class="form-control"
+                  id="ph"
+                  name="ph"
+                  type="number"
+                  step="0.01"
+                  placeholder="pH"
+                />
+              </div>
+              <div>
+                <label class="field-label" for="oc">Organic Carbon</label>
+                <input
+                  class="form-control"
+                  id="oc"
+                  name="oc"
+                  type="number"
+                  step="0.01"
+                  placeholder="OC"
+                />
+              </div>
+              <div>
+                <label class="field-label" for="cec">CEC</label>
+                <input
+                  class="form-control"
+                  id="cec"
+                  name="cec"
+                  type="number"
+                  step="0.01"
+                  placeholder="CEC"
+                />
+              </div>
+            </div>
+          </div>
+
+          <div class="mt-3">
+            <label class="field-label" for="rainfall">
+              <i class="fas fa-cloud-rain"></i> Expected Rainfall (mm/year)
+            </label>
+            <input
+              class="form-control"
+              id="rainfall"
+              name="rainfall"
+              type="number"
+              step="0.01"
+              placeholder="e.g., 550"
+            />
+          </div>
+
+          <button type="submit" class="btn-fetch" id="submitBtn">
+            <i class="fas fa-magnifying-glass"></i> Fetch Soil Data
+          </button>
+        </form>
+
+        <div id="resultCard" class="result-card">
+          <div class="result-title">Analysis Result</div>
+          <div id="resultView"></div>
+          <pre id="out" class="result-pre hidden"></pre>
+        </div>
+      </div>
+
+      <a href="{% url 'index' %}" class="btn-back">
+        <i class="fas fa-arrow-left"></i> Back to Main Predictor
+      </a>
+    </div>
+
+    <script>
+      const tabs = document.querySelectorAll(".mode-tab");
+      const manualInput = document.getElementById("manual_input");
+      const locationFields = document.getElementById("locationFields");
+      const coordFields = document.getElementById("coordFields");
+      const manualFields = document.getElementById("manualFields");
+      const form = document.getElementById("advForm");
+      const resultCard = document.getElementById("resultCard");
+      const resultView = document.getElementById("resultView");
+      const out = document.getElementById("out");
+      const submitBtn = document.getElementById("submitBtn");
+
+      function renderSuccessResult(data) {
+        const soil = data.soil_parameters || {};
+        const disease = data.disease_info || {};
+        const market = data.market_data || {};
+
+        resultView.innerHTML = `
+          <div class="result-grid">
+            <div class="result-item"><strong>Recommended Crop</strong><span>${data.recommended_crop || "-"}</span></div>
+            <div class="result-item"><strong>Confidence Score</strong><span>${data.confidence_score ?? "-"}%</span></div>
+            <div class="result-item"><strong>Nitrogen</strong><span>${soil.Nitrogen ?? "-"}</span></div>
+            <div class="result-item"><strong>Phosphorus</strong><span>${soil.Phosphorus ?? "-"}</span></div>
+            <div class="result-item"><strong>Potassium</strong><span>${soil.Potassium ?? "-"}</span></div>
+            <div class="result-item"><strong>pH</strong><span>${soil.pH ?? "-"}</span></div>
+          </div>
+          <div class="result-block"><strong>Location:</strong> ${data.location || "-"}</div>
+          <div class="result-block"><strong>Disease:</strong> ${disease.disease || "N/A"}<br/><strong>Solution:</strong> ${disease.solution || "N/A"}</div>
+          <div class="result-block">
+            <strong>Market:</strong> ${market.market || "-"} |
+            <strong>Price:</strong> ${market.modal_price ?? "-"} ${market.unit || ""}<br/>
+            <strong>Live:</strong> ${market.live ? "Yes" : "No"}<br/>
+            <strong>Source:</strong> ${market.source || "-"}
+          </div>
+        `;
+      }
+
+      function setMode(mode) {
+        tabs.forEach((tab) =>
+          tab.classList.toggle("active", tab.dataset.mode === mode),
+        );
+
+        locationFields.classList.toggle("hidden", mode !== "location");
+        coordFields.classList.toggle("hidden", mode !== "coords");
+        manualFields.classList.toggle("hidden", mode !== "manual");
+
+        manualInput.value = mode === "manual" ? "true" : "false";
+
+        document.getElementById("location_name").required = mode === "location";
+        document.getElementById("latitude").required = mode === "coords";
+        document.getElementById("longitude").required = mode === "coords";
+
+        const manualIds = [
+          "nitrogen",
+          "phosphorus",
+          "potassium",
+          "ph",
+          "oc",
+          "cec",
+        ];
+        manualIds.forEach((id) => {
+          document.getElementById(id).required = mode === "manual";
+        });
+      }
+
+      tabs.forEach((tab) => {
+        tab.addEventListener("click", () => setMode(tab.dataset.mode));
+      });
+
+      setMode("location");
+
+      form.addEventListener("submit", async function (e) {
+        e.preventDefault();
+        const formData = new FormData(form);
+        const csrftoken = document.querySelector(
+          "[name=csrfmiddlewaretoken]",
+        ).value;
+        const previousText = submitBtn.innerHTML;
+        submitBtn.disabled = true;
+        submitBtn.innerHTML =
+          '<i class="fas fa-spinner fa-spin"></i> Fetching...';
+
+        try {
+          const response = await fetch('{% url "advanced_soil_analysis" %}', {
+            method: "POST",
+            headers: { "X-CSRFToken": csrftoken },
+            body: formData,
+          });
+
+          const data = await response.json();
+          resultCard.style.display = "block";
+
+          if (data.success) {
+            out.classList.add("hidden");
+            resultView.classList.remove("hidden");
+            renderSuccessResult(data);
+          } else {
+            resultView.classList.add("hidden");
+            out.classList.remove("hidden");
+            out.textContent = JSON.stringify(data, null, 2);
+          }
+        } catch (error) {
+          resultCard.style.display = "block";
+          resultView.classList.add("hidden");
+          out.classList.remove("hidden");
+          out.textContent = JSON.stringify(
+            { error: "Request failed", detail: String(error) },
+            null,
+            2,
+          );
+        } finally {
+          submitBtn.disabled = false;
+          submitBtn.innerHTML = previousText;
+        }
+      });
+    </script>
+  </body>
+</html>

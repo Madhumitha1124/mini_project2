@@ -1,0 +1,8 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Soil Analysis</title>
+  <style>body{font-family:Segoe UI,Arial,sans-serif;background:#0b2a1a;color:#e8f5ec;margin:0}.wrap{max-width:1100px;margin:20px auto;padding:0 12px}.card{background:#123322;border:1px solid #2a6b41;border-radius:12px;padding:16px;margin-bottom:14px}table{width:100%;border-collapse:collapse;font-size:13px}th,td{border:1px solid #2a6b41;padding:8px;text-align:left}th{background:#1f4d2e}a{color:#9ad1b1}</style>
+</head>
+<body><div class="wrap"><h1>Soil Based Crop Recommendations</h1><p><a href="{% url 'index' %}">Back Home</a></p>{% if error %}<div class="card">{{ error }}</div>{% else %}<div class="card"><p><strong>Total Samples:</strong> {{ stats.total_samples }} | <strong>Avg Score:</strong> {{ stats.avg_score|floatformat:2 }} | <strong>High Confidence:</strong> {{ stats.high_confidence }} | <strong>Most Recommended:</strong> {{ stats.most_recommended }}</p></div><div class="card"><table><thead><tr><th>District</th><th>Block</th><th>pH</th><th>OC</th><th>N</th><th>P</th><th>K</th><th>Crop</th><th>Score</th></tr></thead><tbody>{% for r in recommendations %}<tr><td>{{ r.District }}</td><td>{{ r.Block }}</td><td>{{ r.pH }}</td><td>{{ r.Organic_Carbon }}</td><td>{{ r.Nitrogen_kg_per_ha }}</td><td>{{ r.Phosphorus_kg_per_ha }}</td><td>{{ r.Potassium_kg_per_ha }}</td><td>{{ r.Top_Recommended_Crop }}</td><td>{{ r.Recommendation_Score }}</td></tr>{% empty %}<tr><td colspan="9">No recommendations found.</td></tr>{% endfor %}</tbody></table></div>{% endif %}</div></body>
+</html>

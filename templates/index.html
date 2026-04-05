@@ -1,0 +1,652 @@
+﻿{% load static %}
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Crop Recommendation | AI-Based System</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+      rel="stylesheet"
+    />
+
+    <style>
+      body {
+        min-height: 100vh;
+        background:
+          linear-gradient(rgba(24, 80, 35, 0.62), rgba(24, 80, 35, 0.62)),
+          url("https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=1920&q=80")
+            center/cover no-repeat fixed;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        padding: 20px 0;
+      }
+
+      .navbar {
+        background: rgba(0, 0, 0, 0.1) !important;
+        backdrop-filter: blur(10px);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        padding: 15px 20px;
+        margin-bottom: 40px;
+      }
+
+      .navbar-brand {
+        color: white !important;
+        font-weight: 700;
+        font-size: 18px;
+      }
+
+      .navbar-nav {
+        margin-left: auto;
+      }
+
+      .nav-link {
+        color: rgba(255, 255, 255, 0.9) !important;
+        margin-left: 20px;
+        transition: all 0.3s ease;
+      }
+
+      .nav-link:hover {
+        color: white !important;
+      }
+
+      .page-header {
+        text-align: center;
+        color: white;
+        margin-bottom: 50px;
+      }
+
+      .page-header h1 {
+        font-size: 42px;
+        font-weight: 700;
+        margin-bottom: 10px;
+      }
+
+      .page-header p {
+        font-size: 18px;
+        opacity: 0.9;
+      }
+
+      .mode-links {
+        margin-top: 18px;
+        display: flex;
+        justify-content: center;
+        gap: 12px;
+        flex-wrap: wrap;
+      }
+
+      .mode-btn {
+        border: 1px solid rgba(255, 255, 255, 0.38);
+        color: white;
+        text-decoration: none;
+        border-radius: 999px;
+        padding: 8px 14px;
+        font-weight: 600;
+        font-size: 14px;
+        background: rgba(255, 255, 255, 0.08);
+      }
+
+      .mode-btn:hover {
+        color: white;
+        background: rgba(255, 255, 255, 0.18);
+      }
+
+      .card {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        border-radius: 20px;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        padding: 40px;
+        margin-bottom: 40px;
+      }
+
+      .card-title {
+        color: #333;
+        font-weight: 700;
+        margin-bottom: 30px;
+        font-size: 24px;
+        text-align: center;
+      }
+
+      .form-section {
+        margin-bottom: 30px;
+      }
+
+      .form-section h5 {
+        color: #2f8f46;
+        font-weight: 600;
+        margin-bottom: 20px;
+        padding-bottom: 10px;
+        border-bottom: 2px solid #2f8f46;
+      }
+
+      .form-group {
+        margin-bottom: 18px;
+      }
+
+      .form-label {
+        display: block;
+        margin-bottom: 8px;
+        color: #333;
+        font-weight: 600;
+        font-size: 14px;
+      }
+
+      .form-control {
+        border-radius: 12px;
+        border: 2px solid #e0e0e0;
+        padding: 12px 16px;
+        font-size: 14px;
+        transition: all 0.3s ease;
+      }
+
+      .form-control:focus {
+        border-color: #2f8f46;
+        box-shadow: 0 0 0 0.2rem rgba(47, 143, 70, 0.25);
+        outline: none;
+      }
+
+      .form-control::placeholder {
+        color: #999;
+      }
+
+      .input-icon {
+        position: relative;
+      }
+
+      .input-icon i {
+        position: absolute;
+        left: 16px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #2f8f46;
+      }
+
+      .input-icon input {
+        padding-left: 45px;
+      }
+
+      .form-row {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 20px;
+      }
+
+      .btn-submit {
+        background: linear-gradient(135deg, #44a85d 0%, #2b7f42 100%);
+        border: none;
+        border-radius: 12px;
+        padding: 14px 40px;
+        font-weight: 600;
+        color: white;
+        width: 100%;
+        margin-top: 20px;
+        transition: all 0.3s ease;
+        font-size: 16px;
+      }
+
+      .btn-submit:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 25px rgba(47, 143, 70, 0.4);
+        color: white;
+      }
+
+      .btn-submit:active {
+        transform: translateY(0);
+      }
+
+      .info-box {
+        background: #e9f8ee;
+        border-left: 4px solid #2f8f46;
+        padding: 20px;
+        border-radius: 12px;
+        margin-bottom: 30px;
+      }
+
+      .info-box h6 {
+        color: #2f8f46;
+        font-weight: 600;
+        margin-bottom: 10px;
+      }
+
+      .info-box p {
+        color: #666;
+        margin: 0;
+        font-size: 14px;
+        line-height: 1.6;
+      }
+
+      .form-helper-text {
+        font-size: 12px;
+        color: #999;
+        margin-top: 5px;
+      }
+
+      .lang-toggle-btn {
+        background: rgba(255,255,255,0.15);
+        border: 1px solid rgba(255,255,255,0.55);
+        color: white;
+        border-radius: 20px;
+        padding: 5px 14px;
+        font-size: 13px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background 0.2s;
+        line-height: 1;
+      }
+      .lang-toggle-btn:hover {
+        background: rgba(255,255,255,0.28);
+      }
+
+      @media (max-width: 768px) {
+        .card {
+          padding: 25px;
+        }
+
+        .page-header h1 {
+          font-size: 28px;
+        }
+
+        .form-row {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <nav class="navbar navbar-expand-lg navbar-dark">
+      <div class="container-fluid">
+        <span class="navbar-brand" data-i18n="nav.brand">
+          <i class="fas fa-leaf"></i> AI Crop Recommendation
+        </span>
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarNav"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav ms-auto align-items-center">
+            {% if user.is_authenticated %}
+            <li class="nav-item">
+              <span class="nav-link"><span data-i18n="nav.welcome">Welcome,</span> {{ user.username }}</span>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'profile' %}">
+                <i class="fas fa-user-circle"></i> <span data-i18n="nav.profile">Profile</span>
+              </a>
+            </li>
+            <li class="nav-item">
+              <form
+                method="POST"
+                action="{% url 'logout' %}"
+                style="display: inline"
+              >
+                {% csrf_token %}
+                <button
+                  type="submit"
+                  class="nav-link"
+                  style="background: none; border: none; cursor: pointer"
+                >
+                  <i class="fas fa-sign-out-alt"></i> <span data-i18n="nav.logout">Logout</span>
+                </button>
+              </form>
+            </li>
+            {% else %}
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'login' %}">
+                <i class="fas fa-sign-in-alt"></i> <span data-i18n="nav.login">Login</span>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'register' %}">
+                <i class="fas fa-user-plus"></i> <span data-i18n="nav.register">Register</span>
+              </a>
+            </li>
+            {% endif %}
+            <li class="nav-item ms-2">
+              <button class="lang-toggle-btn" onclick="i18nToggle()">தமிழ்</button>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <div class="container">
+      <div class="page-header">
+        <h1 data-i18n="index.title"><i class="fas fa-seedling"></i> Crop Recommendation System</h1>
+        <p data-i18n="index.subtitle">
+          Get personalized crop recommendations based on soil and climate
+          parameters
+        </p>
+        <div class="mode-links">
+          <span class="mode-btn" data-i18n="index.simple"
+            ><i class="fas fa-leaf"></i> Simple Predictor</span
+          >
+          <a class="mode-btn" href="{% url 'advanced_soil_analysis' %}" data-i18n="index.advanced">
+            <i class="fas fa-map-marked-alt"></i> Advanced Soil Analysis
+          </a>
+        </div>
+      </div>
+
+      <div class="row justify-content-center">
+        <div class="col-lg-8">
+          <div class="card">
+            <h2 class="card-title" data-i18n="index.card_title">
+              <i class="fas fa-microscope"></i> Enter Soil & Climate Details
+            </h2>
+
+            <div class="info-box">
+              <h6 data-i18n="index.how_title"><i class="fas fa-info-circle"></i> How to Use</h6>
+              <p data-i18n="index.how_body">
+                Fill in the soil nutrients (N, P, K), temperature, humidity, pH
+                level, and expected rainfall. Our AI model will recommend the
+                best crop for your conditions.
+              </p>
+            </div>
+
+            <form
+              method="POST"
+              action="{% url 'predict' %}"
+              class="recommendation-form"
+            >
+              {% csrf_token %}
+
+              <!-- Soil Nutrients Section -->
+              <div class="form-section">
+                <h5 data-i18n="index.nutrients"><i class="fas fa-flask"></i> Soil Nutrients (ppm)</h5>
+
+                <div class="form-row">
+                  <div class="form-group">
+                    <label class="form-label" for="nitrogen" data-i18n="index.nitrogen">
+                      <i class="fas fa-atom"></i> Nitrogen (N) - Color Level
+                    </label>
+                    <select
+                      id="nitrogen"
+                      name="Nitrogen"
+                      class="form-control"
+                      required
+                    >
+                      <option value="" data-i18n="index.sel_n">Select Nitrogen level</option>
+                      <option value="80" data-i18n="index.red_low">Red (Low)</option>
+                      <option value="220" data-i18n="index.yel_mid">Yellow (Medium)</option>
+                      <option value="420" data-i18n="index.grn_high">Green (High)</option>
+                    </select>
+                    <div class="form-helper-text">
+                      Color is auto-converted to N value (ppm)
+                    </div>
+                  </div>
+
+                  <div class="form-group">
+                    <label class="form-label" for="phosphorus" data-i18n="index.phosphorus">
+                      <i class="fas fa-atom"></i> Phosphorus (P) - Color Level
+                    </label>
+                    <select
+                      id="phosphorus"
+                      name="Phosphorus"
+                      class="form-control"
+                      required
+                    >
+                      <option value="" data-i18n="index.sel_p">Select Phosphorus level</option>
+                      <option value="20" data-i18n="index.red_low">Red (Low)</option>
+                      <option value="55" data-i18n="index.yel_mid">Yellow (Medium)</option>
+                      <option value="95" data-i18n="index.grn_high">Green (High)</option>
+                    </select>
+                    <div class="form-helper-text">
+                      Color is auto-converted to P value (ppm)
+                    </div>
+                  </div>
+
+                  <div class="form-group">
+                    <label class="form-label" for="potassium" data-i18n="index.potassium">
+                      <i class="fas fa-atom"></i> Potassium (K) - Color Level
+                    </label>
+                    <select
+                      id="potassium"
+                      name="Potassium"
+                      class="form-control"
+                      required
+                    >
+                      <option value="" data-i18n="index.sel_k">Select Potassium level</option>
+                      <option value="90" data-i18n="index.red_low">Red (Low)</option>
+                      <option value="180" data-i18n="index.yel_mid">Yellow (Medium)</option>
+                      <option value="300" data-i18n="index.grn_high">Green (High)</option>
+                    </select>
+                    <div class="form-helper-text">
+                      Color is auto-converted to K value (ppm)
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Climate & Environment Section -->
+              <div class="form-section">
+                <h5 data-i18n="index.climate"><i class="fas fa-cloud-sun"></i> Climate & Environment</h5>
+
+                <div class="form-row">
+                  <div class="form-group">
+                    <label class="form-label" for="temperature" data-i18n="index.temp">
+                      <i class="fas fa-thermometer-half"></i> Temperature
+                    </label>
+                    <input
+                      type="number"
+                      id="temperature"
+                      name="Temperature"
+                      class="form-control"
+                      placeholder="e.g., 25.5"
+                      step="0.01"
+                    />
+                    <div class="form-helper-text" data-i18n="index.temp_hint">
+                      Celsius (°C). Leave blank to auto-fill from weather.
+                    </div>
+                  </div>
+
+                  <div class="form-group">
+                    <label class="form-label" for="humidity" data-i18n="index.humidity">
+                      <i class="fas fa-droplet"></i> Humidity
+                    </label>
+                    <input
+                      type="number"
+                      id="humidity"
+                      name="Humidity"
+                      class="form-control"
+                      placeholder="e.g., 75"
+                      step="0.01"
+                      min="0"
+                      max="100"
+                    />
+                    <div class="form-helper-text" data-i18n="index.hum_hint">
+                      Percentage (%). Leave blank to auto-fill from weather.
+                    </div>
+                  </div>
+
+                  <div class="form-group">
+                    <label class="form-label" for="ph" data-i18n="index.ph">
+                      <i class="fas fa-scale-balanced"></i> Soil pH
+                    </label>
+                    <input
+                      type="number"
+                      id="ph"
+                      name="pH"
+                      class="form-control"
+                      placeholder="e.g., 6.5"
+                      step="0.01"
+                      required
+                      min="0"
+                      max="14"
+                    />
+                    <div class="form-helper-text" data-i18n="index.ph_hint">pH Scale (0-14)</div>
+                  </div>
+
+                  <div class="form-group">
+                    <label class="form-label" for="rainfall" data-i18n="index.rainfall">
+                      <i class="fas fa-cloud-rain"></i> Rainfall
+                    </label>
+                    <input
+                      type="number"
+                      id="rainfall"
+                      name="Rainfall"
+                      class="form-control"
+                      placeholder="e.g., 200"
+                      step="0.01"
+                      min="0"
+                    />
+                    <div class="form-helper-text" data-i18n="index.rain_hint">
+                      Millimeters (mm). Optional; auto-filled from weather if
+                      blank.
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Location / Weather Autofill -->
+              <div class="form-section">
+                <h5 data-i18n="index.location">
+                  <i class="fas fa-location-arrow"></i> Location / Weather
+                </h5>
+                <div class="form-row">
+                  <div class="form-group">
+                    <label class="form-label" for="city" data-i18n="index.city">City (optional)</label>
+                    <input
+                      type="text"
+                      id="city"
+                      name="city"
+                      class="form-control"
+                      placeholder="City name (e.g., Delhi)"
+                    />
+                    <div class="form-helper-text" data-i18n="index.city_hint">
+                      Provide a city to allow the app to autofill temperature &
+                      humidity from weather data.
+                    </div>
+                  </div>
+
+                  <div class="form-group">
+                    <label class="form-label" data-i18n="index.autofill">Autofill options</label>
+                    <div class="form-helper-text" data-i18n="index.autofill_hint">
+                      If Temperature or Humidity are left blank, they'll be
+                      fetched from the weather API for the provided city.
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <button type="submit" class="btn btn-submit" data-i18n="index.submit">
+                <i class="fas fa-magic"></i> Get Crop Recommendation
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{% static 'js/i18n.js' %}"></script>
+
+    <script>
+      // Weather API Integration
+      const cityInput = document.getElementById("city");
+      const tempInput = document.getElementById("temperature");
+      const humidityInput = document.getElementById("humidity");
+      const rainfallInput = document.getElementById("rainfall");
+
+      // Fetch weather data when city input loses focus or on Enter key
+      if (cityInput) {
+        cityInput.addEventListener("blur", fetchWeatherData);
+        cityInput.addEventListener("keypress", function (e) {
+          if (e.key === "Enter") {
+            e.preventDefault();
+            fetchWeatherData();
+          }
+        });
+      }
+
+      function fetchWeatherData() {
+        const city = cityInput.value.trim();
+
+        if (!city) {
+          alert("Please enter a city name");
+          return;
+        }
+
+        // Show loading indicator
+        const originalBtnText =
+          document.querySelector(".btn-submit").textContent;
+        document.querySelector(".btn-submit").disabled = true;
+        document.querySelector(".btn-submit").textContent =
+          "Fetching weather...";
+
+        fetch(`/api/weather/?city=${encodeURIComponent(city)}`)
+          .then((response) => response.json())
+          .then((data) => {
+            if (data.success) {
+              // Auto-fill temperature and humidity
+              if (data.temperature !== null) {
+                tempInput.value = data.temperature;
+              }
+              if (data.humidity !== null) {
+                humidityInput.value = data.humidity;
+              }
+              if (data.rainfall !== null && data.rainfall > 0) {
+                rainfallInput.value = data.rainfall;
+              }
+
+              // Show success message
+              showWeatherMessage(
+                `Weather data for ${data.city}: ${data.temperature}°C, Humidity: ${data.humidity}%`,
+                "success",
+              );
+            } else {
+              showWeatherMessage(
+                data.error ||
+                  "Could not fetch weather data. Please check the city name.",
+                "error",
+              );
+            }
+          })
+          .catch((error) => {
+            console.error("Error fetching weather:", error);
+            showWeatherMessage(
+              "Error fetching weather data. Please try again or configure the weather API key.",
+              "error",
+            );
+          })
+          .finally(() => {
+            document.querySelector(".btn-submit").disabled = false;
+            document.querySelector(".btn-submit").textContent = originalBtnText;
+          });
+      }
+
+      function showWeatherMessage(message, type) {
+        // Create alert element
+        const alertClass =
+          type === "success" ? "alert-success" : "alert-danger";
+        const alert = document.createElement("div");
+        alert.className = `alert ${alertClass} alert-dismissible fade show`;
+        alert.role = "alert";
+        alert.innerHTML = `
+          ${message}
+          <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        `;
+
+        // Insert after the form section
+        const formSection = document.querySelector(".form-section");
+        if (formSection) {
+          formSection.parentNode.insertBefore(alert, formSection);
+        }
+
+        // Auto-dismiss after 5 seconds
+        setTimeout(() => {
+          alert.remove();
+        }, 5000);
+      }
+    </script>
+  </body>
+</html>

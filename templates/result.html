@@ -1,0 +1,468 @@
+﻿{% load static %}
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Recommendation Result | AI Crop System</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+      rel="stylesheet"
+    />
+
+    <style>
+      body {
+        min-height: 100vh;
+        background:
+          linear-gradient(rgba(24, 80, 35, 0.62), rgba(24, 80, 35, 0.62)),
+          url("https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=1920&q=80")
+            center/cover no-repeat fixed;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        padding: 20px 0;
+      }
+
+      .navbar {
+        background: rgba(0, 0, 0, 0.1) !important;
+        backdrop-filter: blur(10px);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        padding: 15px 20px;
+        margin-bottom: 40px;
+      }
+
+      .navbar-brand {
+        color: white !important;
+        font-weight: 700;
+        font-size: 18px;
+      }
+
+      .navbar-nav {
+        margin-left: auto;
+      }
+
+      .nav-link {
+        color: rgba(255, 255, 255, 0.9) !important;
+        margin-left: 20px;
+        transition: all 0.3s ease;
+      }
+
+      .nav-link:hover {
+        color: white !important;
+      }
+
+      .result-container {
+        min-height: calc(100vh - 150px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 40px 20px;
+      }
+
+      .result-card {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        border-radius: 20px;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        padding: 60px 40px;
+        max-width: 600px;
+        text-align: center;
+        animation: slideUp 0.6s ease-out;
+      }
+
+      @keyframes slideUp {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .result-icon {
+        font-size: 80px;
+        color: #2f8f46;
+        margin-bottom: 20px;
+        animation: bounce 1s ease-in-out infinite;
+      }
+
+      @keyframes bounce {
+        0%,
+        100% {
+          transform: translateY(0);
+        }
+        50% {
+          transform: translateY(-20px);
+        }
+      }
+
+      .result-title {
+        color: #333;
+        font-size: 24px;
+        font-weight: 600;
+        margin-bottom: 30px;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+      }
+
+      .crop-name {
+        background: linear-gradient(135deg, #44a85d 0%, #2b7f42 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        font-size: 56px;
+        font-weight: 700;
+        margin: 30px 0;
+        text-transform: capitalize;
+      }
+
+      .crop-description {
+        color: #666;
+        font-size: 16px;
+        line-height: 1.8;
+        margin: 30px 0;
+      }
+
+      .crop-badge {
+        display: inline-block;
+        background: #e9f8ee;
+        color: #2f8f46;
+        padding: 8px 20px;
+        border-radius: 20px;
+        font-weight: 600;
+        margin: 15px 5px;
+        font-size: 14px;
+      }
+
+      .action-buttons {
+        display: flex;
+        gap: 15px;
+        justify-content: center;
+        margin-top: 40px;
+        flex-wrap: wrap;
+      }
+
+      .btn-primary-action {
+        background: linear-gradient(135deg, #44a85d 0%, #2b7f42 100%);
+        border: none;
+        border-radius: 12px;
+        padding: 14px 30px;
+        color: white;
+        font-weight: 600;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .btn-primary-action:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 25px rgba(47, 143, 70, 0.4);
+        color: white;
+      }
+
+      .btn-secondary-action {
+        background: white;
+        border: 2px solid #2f8f46;
+        color: #2f8f46;
+        border-radius: 12px;
+        padding: 12px 28px;
+        font-weight: 600;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .btn-secondary-action:hover {
+        background: #e9f8ee;
+        transform: translateY(-2px);
+        color: #2f8f46;
+      }
+
+      .confidence-section {
+        background: #e9f8ee;
+        border-radius: 12px;
+        padding: 25px;
+        margin: 30px 0;
+        border-left: 4px solid #2f8f46;
+      }
+
+      .confidence-label {
+        color: #2f8f46;
+        font-weight: 600;
+        margin-bottom: 10px;
+        font-size: 14px;
+      }
+
+      .confidence-bar {
+        background: #d8f2df;
+        border-radius: 10px;
+        height: 10px;
+        overflow: hidden;
+        margin-bottom: 8px;
+      }
+
+      .confidence-fill {
+        background: linear-gradient(90deg, #44a85d 0%, #2b7f42 100%);
+        height: 100%;
+        width: 95%;
+        animation: fillBar 1.5s ease-out;
+      }
+
+      @keyframes fillBar {
+        from {
+          width: 0;
+        }
+        to {
+          width: 95%;
+        }
+      }
+
+      .confidence-text {
+        color: #666;
+        font-size: 13px;
+        text-align: right;
+      }
+
+      .divider {
+        height: 2px;
+        background: linear-gradient(90deg, transparent, #2f8f46, transparent);
+        margin: 25px 0;
+      }
+
+      .extra-info {
+        margin-top: 20px;
+        text-align: left;
+      }
+
+      .info-card {
+        background: #e9f8ee;
+        border: 1px solid #cdebd6;
+        border-left: 4px solid #2f8f46;
+        border-radius: 12px;
+        padding: 14px;
+        margin-top: 12px;
+      }
+
+      .info-card h6 {
+        margin: 0 0 8px;
+        color: #2f8f46;
+        font-weight: 700;
+      }
+
+      .info-card p {
+        margin: 0;
+        color: #4d5b52;
+        font-size: 14px;
+      }
+
+      @media (max-width: 576px) {
+        .result-card {
+          padding: 40px 25px;
+        }
+
+      .lang-toggle-btn {
+        background: rgba(255,255,255,0.15);
+        border: 1px solid rgba(255,255,255,0.55);
+        color: white;
+        border-radius: 20px;
+        padding: 5px 14px;
+        font-size: 13px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background 0.2s;
+        line-height: 1;
+      }
+      .lang-toggle-btn:hover {
+        background: rgba(255,255,255,0.28);
+      }
+
+        .crop-name {
+          font-size: 42px;
+        }
+
+        .result-icon {
+          font-size: 60px;
+        }
+
+        .action-buttons {
+          flex-direction: column;
+        }
+
+        .btn-primary-action,
+        .btn-secondary-action {
+          width: 100%;
+          justify-content: center;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <nav class="navbar navbar-expand-lg navbar-dark">
+      <div class="container-fluid">
+        <span class="navbar-brand" data-i18n="nav.brand">
+          <i class="fas fa-leaf"></i> AI Crop Recommendation
+        </span>
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarNav"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav ms-auto align-items-center">
+            {% if user.is_authenticated %}
+            <li class="nav-item">
+              <span class="nav-link"><span data-i18n="nav.welcome">Welcome,</span> {{ user.username }}</span>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'profile' %}">
+                <i class="fas fa-user-circle"></i> <span data-i18n="nav.profile">Profile</span>
+              </a>
+            </li>
+            <li class="nav-item">
+              <form
+                method="POST"
+                action="{% url 'logout' %}"
+                style="display: inline"
+              >
+                {% csrf_token %}
+                <button
+                  type="submit"
+                  class="nav-link"
+                  style="background: none; border: none; cursor: pointer"
+                >
+                  <i class="fas fa-sign-out-alt"></i> <span data-i18n="nav.logout">Logout</span>
+                </button>
+              </form>
+            </li>
+            {% else %}
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'login' %}">
+                <i class="fas fa-sign-in-alt"></i> <span data-i18n="nav.login">Login</span>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'register' %}">
+                <i class="fas fa-user-plus"></i> <span data-i18n="nav.register">Register</span>
+              </a>
+            </li>
+            {% endif %}
+            <li class="nav-item ms-2">
+              <button class="lang-toggle-btn" onclick="i18nToggle()">தமிழ்</button>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <div class="result-container">
+      <div class="result-card">
+        <div class="result-icon">
+          <i class="fas fa-leaf"></i>
+        </div>
+
+        <h2 class="result-title" data-i18n="result.title">
+          <i class="fas fa-check-circle"></i> Recommended Crop
+        </h2>
+
+        <div class="divider"></div>
+
+        <h1 class="crop-name" data-i18n-dynamic="crop">{{ crop }}</h1>
+
+        <p class="crop-description" data-i18n="result.desc">
+          Based on the soil and climate parameters you provided, this is the
+          best crop recommendation for your farming conditions.
+        </p>
+
+        <div class="confidence-section">
+          <div class="confidence-label" data-i18n="result.conf">
+            <i class="fas fa-chart-pie"></i> Recommendation Confidence
+          </div>
+          <div class="confidence-bar">
+            <div
+              class="confidence-fill"
+              style="width: {{ confidence }}%;"
+            ></div>
+          </div>
+          <div class="confidence-text" data-confidence="{{ confidence }}">{{ confidence }}% Confidence</div>
+        </div>
+
+        <div class="crop-badge" data-i18n="result.optimal"><i class="fas fa-star"></i> Optimal Match</div>
+        <div class="crop-badge" data-i18n="result.recommended"><i class="fas fa-heart"></i> Recommended</div>
+
+        {% if crop_suggestions %}
+        <div class="info-card">
+          <h6 data-i18n="result.suitable"><i class="fas fa-seedling"></i> Suitable Options</h6>
+          <p class="crop-suggestions-text" data-i18n-dynamic="suggestions">{{ crop_suggestions|join:", " }}</p>
+        </div>
+        {% endif %}
+
+        {% if crop_disease_info or market_data or used_weather %}
+        <div class="extra-info">
+          {% if used_weather %}
+          <div class="info-card">
+            <h6 data-i18n="result.weather_src"><i class="fas fa-cloud-sun"></i> Weather Source</h6>
+            <p data-i18n="result.weather_body">Temperature/Humidity were auto-filled from weather data.</p>
+          </div>
+          {% endif %} {% if crop_disease_info %}
+          <div class="info-card">
+            <h6 data-i18n="result.disease"><i class="fas fa-shield-virus"></i> Possible Disease</h6>
+            <p>
+              <strong data-i18n="result.disease_label">Disease:</strong> <span class="disease-name-text" data-i18n-dynamic="disease">{{ crop_disease_info.disease }}</span><br />
+              <strong data-i18n="result.solution_label">Solution:</strong> <span class="disease-solution-text" data-i18n-dynamic="solution">{{ crop_disease_info.solution }}</span>
+            </p>
+          </div>
+          {% endif %} {% if market_data %}
+          <div class="info-card">
+            <h6 data-i18n="result.market"><i class="fas fa-store"></i> Market Data</h6>
+            <p>
+              <strong data-i18n="result.market_lbl">Market:</strong>
+              {% if market_data.market == "Offline Estimate" %}-{% else %}{{ market_data.market|default:"-" }}{% endif %} |
+              <strong data-i18n="result.price_lbl">Price:</strong> {{ market_data.modal_price|default:0 }} {{ market_data.unit|default:"" }}
+            </p>
+          </div>
+          {% endif %}
+        </div>
+        {% endif %}
+
+        <div class="divider"></div>
+
+        <p class="crop-description" style="font-size: 14px; color: #999" data-i18n="result.note">
+          <i class="fas fa-info-circle"></i> To get another recommendation, fill
+          in different parameters and try again.
+        </p>
+
+        <div class="action-buttons">
+          <a href="{% url 'index' %}" class="btn-primary-action" data-i18n="result.try_again">
+            <i class="fas fa-redo"></i> Try Again
+          </a>
+          {% if user.is_authenticated %}
+          <a href="{% url 'profile' %}" class="btn-secondary-action" data-i18n="result.my_profile">
+            <i class="fas fa-user"></i> My Profile
+          </a>
+          {% else %}
+          <a href="{% url 'login' %}" class="btn-secondary-action" data-i18n="result.login_save">
+            <i class="fas fa-sign-in-alt"></i> Login to Save
+          </a>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{% static 'js/i18n.js' %}?v=20260401"></script>
+  </body>
+</html>
